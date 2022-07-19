@@ -6,56 +6,61 @@ import {useCombobox} from '../use-combobox'
 import {getItems} from '../workerized-filter-cities'
 import {useAsync, useForceRerender} from '../utils'
 
-function Menu({
-  items,
-  getMenuProps,
-  getItemProps,
-  highlightedIndex,
-  selectedItem,
-}) {
-  return (
-    <ul {...getMenuProps()}>
-      {items.map((item, index) => (
-        <ListItem
-          key={item.id}
-          getItemProps={getItemProps}
-          item={item}
-          index={index}
-          selectedItem={selectedItem}
-          highlightedIndex={highlightedIndex}
-        >
-          {item.name}
-        </ListItem>
-      ))}
-    </ul>
-  )
-}
+const Menu = React.memo(
+  ({items, getMenuProps, getItemProps, highlightedIndex, selectedItem}) => {
+    return (
+      <ul {...getMenuProps()}>
+        {items.map((item, index) => (
+          <ListItem
+            key={item.id}
+            getItemProps={getItemProps}
+            item={item}
+            index={index}
+            selectedItem={selectedItem}
+            highlightedIndex={highlightedIndex}
+          >
+            {item.name}
+          </ListItem>
+        ))}
+      </ul>
+    )
+  },
+)
 // 🐨 Memoize the Menu here using React.memo
 
-function ListItem({
-  getItemProps,
-  item,
-  index,
-  selectedItem,
-  highlightedIndex,
-  ...props
-}) {
-  const isSelected = selectedItem?.id === item.id
-  const isHighlighted = highlightedIndex === index
-  return (
-    <li
-      {...getItemProps({
-        index,
-        item,
-        style: {
-          fontWeight: isSelected ? 'bold' : 'normal',
-          backgroundColor: isHighlighted ? 'lightgray' : 'inherit',
-        },
-        ...props,
-      })}
-    />
-  )
-}
+const ListItem = React.memo(
+  ({getItemProps, item, index, selectedItem, highlightedIndex, ...props}) => {
+    const isSelected = selectedItem?.id === item.id
+    const isHighlighted = highlightedIndex === index
+    return (
+      <li
+        {...getItemProps({
+          index,
+          item,
+          style: {
+            fontWeight: isSelected ? 'bold' : 'normal',
+            backgroundColor: isHighlighted ? 'lightgray' : 'inherit',
+          },
+          ...props,
+        })}
+      />
+    )
+  },
+  (prevProps, nextProps) => {
+    if (prevProps.getItemProps !== nextProps.getItemProps) return false
+    if (prevProps.item !== nextProps.item) return false
+    if (prevProps.index !== nextProps.index) return false
+    if (prevProps.selectedItem !== nextProps.selectedItem) return false
+
+    if (prevProps.highlightedIndex !== nextProps.highlightedIndex) {
+      const wasHighlighted = prevProps.highlightedIndex === prevProps.index
+      const isNowHighlighted = nextProps.highlightedIndex === nextProps.index
+      return wasHighlighted === isNowHighlighted
+    }
+
+    return true
+  },
+)
 // 🐨 Memoize the ListItem here using React.memo
 
 function App() {
