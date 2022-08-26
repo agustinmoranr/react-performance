@@ -2,19 +2,16 @@
 // http://localhost:3000/isolated/exercise/01.js
 
 import * as React from 'react'
-// 💣 remove this import
+// 💣 remueve este import
 import Globe from '../globe'
 
-// 🐨 use React.lazy to create a Globe component which uses a dynamic import
-// to get the Globe component from the '../globe' module.
+// 🐨 usa React.lazy para importar dinámicamente el componente Globe desde el módulo "../globe"
 
 function App() {
   const [showGlobe, setShowGlobe] = React.useState(false)
 
-  // 🐨 wrap the code below in a <React.Suspense /> component
-  // with a fallback.
-  // 💰 try putting it in a few different places and observe how that
-  // impacts the user experience.
+  // 🐨 Envuelve el codigo debajo en un componente <React.Suspense /> con un fallback
+  // 💰 Intenta ponerlo en algúnos lugares distintos del arbol de componentes y observa como eso impacta a la experiencia de usuario.
   return (
     <div
       style={{
@@ -40,8 +37,7 @@ function App() {
     </div>
   )
 }
-// 🦉 Note that if you're not on the isolated page, then you'll notice that this
-// app actually already has a React.Suspense component higher up in the tree
-// where this component is rendered, so you *could* just rely on that one.
+
+// 🦉 Ten en cuenta que si no estás en la página aislada, notarás que la app en realidad ya cuenta con un componente React.Suspense más arriba en el árbol donde se representa este componente, por lo que *podría* simplemente confiar en ese.
 
 export default App
