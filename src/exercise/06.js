@@ -12,6 +12,7 @@ import {
 
 const AppStateContext = React.createContext()
 const AppDispatchContext = React.createContext()
+const appDogNameContext = React.createContext()
 
 const initialGrid = Array.from({length: 100}, () =>
   Array.from({length: 100}, () => Math.random() * 100),
@@ -35,6 +36,7 @@ function AppProvider({children}) {
   const [state, dispatch] = React.useReducer(appReducer, {
     grid: initialGrid,
   })
+
   return (
     <AppStateContext.Provider value={state}>
       <AppDispatchContext.Provider value={dispatch}>
@@ -56,6 +58,20 @@ function useAppDispatch() {
   const context = React.useContext(AppDispatchContext)
   if (!context) {
     throw new Error('useAppDispatch must be used within the AppProvider')
+  }
+  return context
+}
+
+function DogProvider(props) {
+  const [dogName, setDogName] = React.useState('')
+  const value = [dogName, setDogName]
+  return <appDogNameContext.Provider value={value} {...props} />
+}
+
+function useDogName() {
+  const context = React.useContext(appDogNameContext)
+  if (!context) {
+    throw new Error('useDogName must be used within the DogProvider')
   }
   return context
 }
@@ -99,7 +115,7 @@ function Cell({row, column}) {
 Cell = React.memo(Cell)
 
 function DogNameInput() {
-  const [dogName, setDogName] = React.useState('')
+  const [dogName, setDogName] = useDogName()
 
   function handleChange(event) {
     const newDogName = event.target.value
@@ -130,7 +146,9 @@ function App() {
       <button onClick={forceRerender}>force rerender</button>
       <AppProvider>
         <div>
-          <DogNameInput />
+          <DogProvider>
+            <DogNameInput />
+          </DogProvider>
           <Grid />
         </div>
       </AppProvider>
